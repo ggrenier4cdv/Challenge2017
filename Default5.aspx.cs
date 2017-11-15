@@ -1,0 +1,377 @@
+﻿using System;
+using System.Data.SqlClient;
+using System.Web;
+using System.Web.Profile;
+using System.Web.SessionState;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+
+public partial class Default5 : Page, IRequiresSessionState
+{
+ //protected Button Button1;
+ //protected HtmlForm form1;
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        string connectionString = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        using (SqlCommand command = new SqlCommand(
+        "DELETE FROM PRECALCUL " +
+        "INSERT INTO PRECALCUL " +
+        "SELECT DISTINCT " +
+        "LV.[JURY], " +
+        "COUNT(1), " +
+        "LV.[ORDRE], " +
+        "MAX(LV.NUMERO), " +
+
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 2 THEN 2 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 1 THEN 3 ELSE 0 END)) * 4.00 /COUNT(1),2) , " +
+
+        "ROUND(AVG(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),2), " +
+        "NULL, " +
+        "ROUND(ISNULL(STDEV(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),0),2), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 1,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 2,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 3,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 4,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 5,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 6,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 7,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 8,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 9,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 10,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 11,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 12,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 13,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 14,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 15,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 16,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 17,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " + 
+        "SUM(CASE WHEN SS.APPRECIATION = 5 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 1 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 1 THEN 1 ELSE 0 END), " +
+        "MAX(LV.[FIRME]), " +
+        "MAX(LV.[TYPE]), " +
+        "MAX(LV.[PAYS]), " +
+        "MAX(LV.[APPELLATION]), " +
+        "MAX(LV.[NOM]), " +
+        "MAX(LV.[MILLESIME]), " +
+        "MAX(LV.[VOLUME]), " +
+        "MAX(LV.[CEPAGE]), " +
+        "MAX(LV.[PRIX]) " +
+        "FROM LISTE_VINS LV, " +
+        "(SELECT DISTINCT * FROM SAISIE_SERIE) SS " +
+        "WHERE LV.ORDRE = SS.ORDRE " +
+        "AND LV.JURY = SS.JURY " +
+        "GROUP BY LV.[JURY], " +
+        "LV.[ORDRE]"))
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.ExecuteNonQuery().ToString();
+                connection.Close();
+            }
+        }
+    }
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        string connectionString = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        using (SqlCommand command = new SqlCommand(
+        "DELETE FROM PRECALCUL2 " +
+        "INSERT INTO PRECALCUL2 " +
+        "SELECT DISTINCT " +
+        "LV.[JURY], " +
+        "COUNT(1), " +
+        "LV.[ORDRE], " +
+        "MAX(LV.NUMERO), " +
+
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 2 THEN 2 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 1 THEN 3 ELSE 0 END)) * 4.00 /COUNT(1),2) , " +
+
+        "ROUND(AVG(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),2), " +
+        "NULL, " +
+        "ROUND(ISNULL(STDEV(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),0),2), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 1,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 2,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 3,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 4,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 5,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 6,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 7,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 8,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 9,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 10,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 11,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 12,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 13,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 14,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 15,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 16,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 17,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " + 
+        "SUM(CASE WHEN SS.APPRECIATION = 5 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 1 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 1 THEN 1 ELSE 0 END), " +
+        "MAX(LV.[FIRME]), " +
+        "MAX(LV.[TYPE]), " +
+        "MAX(LV.[PAYS]), " +
+        "MAX(LV.[APPELLATION]), " +
+        "MAX(LV.[NOM]), " +
+        "MAX(LV.[MILLESIME]), " +
+        "MAX(LV.[VOLUME]), " +
+        "MAX(LV.[CEPAGE]), " +
+        "MAX(LV.[PRIX]) " +
+        "FROM LISTE_VINS LV, " +
+        "(SELECT DISTINCT * FROM SAISIE_SERIE) SS " +
+        "WHERE LV.ORDRE = SS.ORDRE " +
+        "AND LV.JURY = SS.JURY " +
+        "AND LV.BOURG = 'X' " +
+        "GROUP BY LV.[JURY], " +
+        "LV.[ORDRE]"))
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.ExecuteNonQuery().ToString();
+                connection.Close();
+            }
+        }
+    }
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        string connectionString = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        using (SqlCommand command = new SqlCommand(
+        "DELETE FROM PRECALCUL2 " +
+        "INSERT INTO PRECALCUL2 " +
+        "SELECT DISTINCT " +
+        "LV.[JURY], " +
+        "COUNT(1), " +
+        "LV.[ORDRE], " +
+        "MAX(LV.NUMERO), " +
+
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 2 THEN 2 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 1 THEN 3 ELSE 0 END)) * 4.00 /COUNT(1),2) , " +
+
+        "ROUND(AVG(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),2), " +
+        "NULL, " +
+        "ROUND(ISNULL(STDEV(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),0),2), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 1,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 2,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 3,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 4,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 5,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 6,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 7,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 8,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 9,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 10,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 11,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 12,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 13,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 14,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 15,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 16,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 17,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 5 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 1 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 1 THEN 1 ELSE 0 END), " +
+        "MAX(LV.[FIRME]), " +
+        "MAX(LV.[TYPE]), " +
+        "MAX(LV.[PAYS]), " +
+        "MAX(LV.[APPELLATION]), " +
+        "MAX(LV.[NOM]), " +
+        "MAX(LV.[MILLESIME]), " +
+        "MAX(LV.[VOLUME]), " +
+        "MAX(LV.[CEPAGE]), " +
+        "MAX(LV.[PRIX]) " +
+        "FROM LISTE_VINS LV, " +
+        "(SELECT DISTINCT * FROM SAISIE_SERIE) SS " +
+        "WHERE LV.ORDRE = SS.ORDRE " +
+        "AND LV.JURY = SS.JURY " +
+        "AND LV.BLAYE = 'X' " +
+        "GROUP BY LV.[JURY], " +
+        "LV.[ORDRE]"))
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.ExecuteNonQuery().ToString();
+                connection.Close();
+            }
+        }
+    }
+
+    protected void Button4_Click(object sender, EventArgs e)
+    {
+        string connectionString = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        using (SqlCommand command = new SqlCommand(
+        "DELETE FROM PRECALCUL2 " +
+        "INSERT INTO PRECALCUL2 " +
+        "SELECT DISTINCT " +
+        "LV.[JURY], " +
+        "COUNT(1), " +
+        "LV.[ORDRE], " +
+        "MAX(LV.NUMERO), " +
+
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 2 THEN 2 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 1 THEN 3 ELSE 0 END)) * 4.00 /COUNT(1),2) , " +
+
+        "ROUND(AVG(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),2), " +
+        "NULL, " +
+        "ROUND(ISNULL(STDEV(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),0),2), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 1,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 2,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 3,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 4,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 5,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 6,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 7,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 8,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 9,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 10,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 11,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 12,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 13,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 14,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 15,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 16,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 17,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 5 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 1 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 1 THEN 1 ELSE 0 END), " +
+        "MAX(LV.[FIRME]), " +
+        "MAX(LV.[TYPE]), " +
+        "MAX(LV.[PAYS]), " +
+        "MAX(LV.[APPELLATION]), " +
+        "MAX(LV.[NOM]), " +
+        "MAX(LV.[MILLESIME]), " +
+        "MAX(LV.[VOLUME]), " +
+        "MAX(LV.[CEPAGE]), " +
+        "MAX(LV.[PRIX]) " +
+        "FROM LISTE_VINS LV, " +
+        "(SELECT DISTINCT * FROM SAISIE_SERIE) SS " +
+        "WHERE LV.ORDRE = SS.ORDRE " +
+        "AND LV.JURY = SS.JURY " +
+        "AND LV.PRIX_SPECIAL = 'X' " +
+        "GROUP BY LV.[JURY], " +
+        "LV.[ORDRE]"))
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.ExecuteNonQuery().ToString();
+                connection.Close();
+            }
+        }
+    }
+    protected void Button5_Click(object sender, EventArgs e)
+    {
+        string connectionString = System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        using (SqlCommand command = new SqlCommand(
+        "DELETE FROM PRECALCUL2 " +
+        "INSERT INTO PRECALCUL2 " +
+        "SELECT DISTINCT " +
+        "LV.[JURY], " +
+        "COUNT(1), " +
+        "LV.[ORDRE], " +
+        "MAX(LV.NUMERO), " +
+
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 2 THEN 2 ELSE 0 END)) * 4.00 /COUNT(1),2) + " +
+        "ROUND((SUM(CASE WHEN SS.APPRECIATION = 1 THEN 3 ELSE 0 END)) * 4.00 /COUNT(1),2) , " +
+
+        "ROUND(AVG(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),2), " +
+        "NULL, " +
+        "ROUND(ISNULL(STDEV(CASE WHEN NON_DEGUSTABLE = 1 THEN 0 ELSE SS.NOTE END),0),2), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 1,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 2,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 3,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 4,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 5,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 6,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 7,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 8,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 9,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 10,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 11,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 12,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 13,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 14,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 15,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 16,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " +
+        "SUM(CASE SUBSTRING(SS.CARATERISTIQUES, 17,1) WHEN '1' THEN 1 WHEN '2' THEN 2 WHEN '3' THEN 3 ELSE 0 END)*12/COUNT(1), " + 
+        "SUM(CASE WHEN SS.APPRECIATION = 5 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.APPRECIATION = 1 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 4 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 3 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 2 THEN 1 ELSE 0 END), " +
+        "SUM(CASE WHEN SS.CONSEIL_ACHAT = 1 THEN 1 ELSE 0 END), " +
+        "MAX(LV.[FIRME]), " +
+        "MAX(LV.[TYPE]), " +
+        "MAX(LV.[PAYS]), " +
+        "MAX(LV.[APPELLATION]), " +
+        "MAX(LV.[NOM]), " +
+        "MAX(LV.[MILLESIME]), " +
+        "MAX(LV.[VOLUME]), " +
+        "MAX(LV.[CEPAGE]), " +
+        "MAX(LV.[PRIX]) " +
+        "FROM LISTE_VINS LV, " +
+        "(SELECT DISTINCT * FROM SAISIE_SERIE) SS " +
+        "WHERE LV.ORDRE = SS.ORDRE " +
+        "AND LV.JURY = SS.JURY " +
+        "AND LV.BIO = 'X' " +
+        "GROUP BY LV.[JURY], " +
+        "LV.[ORDRE]"))
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.ExecuteNonQuery().ToString();
+                connection.Close();
+            }
+        }
+    }
+    protected void Page_Load(object sender, EventArgs e)
+ {
+ }
+
+ 
+
+}
+
